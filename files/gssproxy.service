@@ -1,0 +1,3 @@
+.include /usr/lib/systemd/system/gssproxy.service
+[Service]
+Environment=KRB5RCACHEDIR=/var/lib/gssproxy/rcache

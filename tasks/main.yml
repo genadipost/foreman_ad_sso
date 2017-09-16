@@ -1,0 +1,102 @@
+---
+
+- name: install the dependencies
+  package: 
+   name: "{{ item }}"
+   state: latest
+  with_items:
+    - gssproxy
+    - sssd
+    - adcli
+    - realmd
+    - samba-common-tools
+    - ipa-python
+
+- name: join the server to the domain
+  expect:
+    command: realm join -v -U {{ ad_user }} {{ domain }} --membership-software=samba
+    responses: 
+       Password for *.: "{{ ad_user_password }}"
+    timeout: 5
+  register: realm_join_result
+  changed_when: realm_join_result.stdout.find('Already joined to this domain') == -1
+  failed_when: realm_join_result.rc == 127
+
+- name: copy default.conf to /etc/ipa/
+  template: 
+    src: default.conf.j2
+    dest: /etc/ipa/default.conf
+
+- name: copy net-keytab.conf to /etc/
+  template:
+    src: net-keytab.conf.j2
+    dest: /etc/net-keytab.conf
+
+- name: create HTTP keytab
+  command: net ads keytab add HTTP -U {{ ad_user }}%{{ ad_user_password }} -d3 -s /etc/net-keytab.conf
+  environment:
+      KRB5_KTNAME: 'FILE:/etc/gssproxy/http.keytab'
+  register: create_keytab_result
+
+- name: change http.keytab permissions
+  file:
+    path: /etc/gssproxy/http.keytab
+    owner: root
+    group: root
+
+- name: add sssd includedir to /etc/krb5.conf
+  lineinfile: 
+    backup: yes
+    state: present 
+    dest: /etc/krb5.conf
+    insertbefore: BOF
+    line: 'includedir /var/lib/sss/pubconf/krb5.include.d/'
+
+- name: create httpd directories 
+  file:
+    path: /etc/httpd/conf
+    state: directory
+
+- name: touch /etc/httpd/conf/http.keytab
+  file:
+    path: /etc/httpd/conf/http.keytab
+    state: touch
+   
+- name: run foreman-installer with ipa-authentication enabled
+  shell: >
+     foreman-installer --foreman-ipa-authentication=true
+
+- name: copy gssproxy.conf
+  copy:
+    src: gssproxy.conf
+    dest: /etc/gssproxy/gssproxy.conf
+
+- name: create separate cache directory for Kerberos to avoid AVC denials   
+  file:
+    path: /var/lib/gssproxy/rcache
+    state: directory
+
+- name: copy gssproxy.service
+  copy:
+    src: gssproxy.service
+    dest: /etc/systemd/system/gssproxy.service
+
+- name: apply changes, enable and restart gssproxy service
+  systemd:
+    name: gssproxy
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  
+- name: copy httpd.service
+  copy:
+    src: httpd.service
+    dest: /etc/systemd/system/httpd.service
+
+- name: apply changes, enable and restart httpd service
+  systemd:
+    name: httpd
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+

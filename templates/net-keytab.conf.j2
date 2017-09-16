@@ -1,0 +1,5 @@
+[global]
+   workgroup = {{ domain.split('.')[0] | upper }}
+   realm = {{ domain | upper }}
+   kerberos method = system keytab
+   security = ads
