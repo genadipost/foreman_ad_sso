@@ -1,4 +1,4 @@
-Role Name
+foreman_ad_sso
 =========
 
 Ansible role to configure Active Directory (AD) as an external authentication source for Foreman server Edit
