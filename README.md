@@ -1,8 +1,7 @@
 foreman_ad_sso
 =========
 
-Ansible role to configure Active Directory (AD) as an external authentication source for Foreman server Edit
-Add topics.
+Ansible role to configure Active Directory (AD) as an external authentication source for Foreman server.
 
 Requirements
 ------------
