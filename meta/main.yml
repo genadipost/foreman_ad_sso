@@ -14,9 +14,6 @@ galaxy_info:
   - name: EL
     versions:
       - 7
-  - name: Centos
-    versions:
-      - 7
   galaxy_tags:
     - theforeman
     - foreman
@@ -25,7 +22,7 @@ galaxy_info:
     - satellite6
     - sat6
     - sso
-    - single sign on
-    - active directory
+    - single-sign-on
+    - active-directory
     - gssproxy
 dependencies: []
