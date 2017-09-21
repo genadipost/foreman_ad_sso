@@ -24,4 +24,7 @@ galaxy_info:
     - single-sign-on
     - active-directory
     - gssproxy
-dependencies: []
+dependencies: 
+  - genadipost.epel_repositories
+  - genadipost.puppet_repositories
+  - genadipost.foreman_repositories
