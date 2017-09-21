@@ -1,7 +1,6 @@
 galaxy_info:
   author: Genadi Postrilko
   description: Ansible role to configure Active Directory (AD) as an external authentication source for Foreman server
-  company: your company (optional)
   issue_tracker_url: https://github.com/genadipost/foreman_ad_sso/issues
   license: BSD
   min_ansible_version: 2.3
