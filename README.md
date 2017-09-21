@@ -24,7 +24,9 @@ Role Variables
 Dependencies
 ------------
 
-None.
+* `genadipost.epel_repositories`
+* `genadipost.puppet_repositories`
+* `genadipost.foreman_repositories`
 
 Example Playbook
 ----------------
