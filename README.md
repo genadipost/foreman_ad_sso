@@ -31,8 +31,6 @@ Dependencies
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
     - hosts: foreman
       roles:
          - { role: genadipost.foreman_ad_sso, ad_user: Administrator, ad_user_password: Pa$$word, domain: test.local }
